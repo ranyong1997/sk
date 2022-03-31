@@ -21,7 +21,6 @@ git clone https://github.com/ranyong1997/sk.git
 2 -- 安装
 使用pip安装： `pip install -r requirements.txt`
 清华镜像源安装：pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
-or
 
 3 -- 运行
 python manage.py
