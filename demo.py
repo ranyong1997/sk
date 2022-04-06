@@ -1,22 +1,27 @@
-import _thread
-import time
+import csv
 
 
-# 为线程定义一个函数
-def print_time(threadName, delay):
-    count = 0
-    while count < 5:
-        time.sleep(delay)
-        count += 1
-        print("%s: %s" % (threadName, time.ctime(time.time())))
+def get_user_all():
+    """读取csv至字典"""
+    csvFile = open("data.csv", "r")
+    reader = csv.reader(csvFile)
+    # 建立空字典
+    result = {}
+    for item in reader:
+        # 忽略第一行
+        if reader.line_num == 1:
+            continue
+        result[item[0]] = item[1]
+    csvFile.close()
+    return result
 
 
-# 创建两个线程
-try:
-    _thread.start_new_thread(print_time, ("Thread-1", 2,))
-    _thread.start_new_thread(print_time, ("Thread-2", 4,))
-except:
-    print("Error: 无法启动线程")
+for key, value in get_user_all().items():
+    print("---------->正在读取{}的账号".format(key))
+    data = {
+        'userName': key,  # 账号
+        'password': value,  # 密码
+    }
 
-while 1:
-    pass
+if __name__ == '__main__':
+    get_user_all()
