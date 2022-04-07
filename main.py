@@ -3,11 +3,11 @@ import csv
 import requests
 import json
 import ddddocr
+import UA
 
 headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
+    'User-Agent': UA.getRandomUA()  # 这里就调用了自己的工具库的方法来随机获取UA
 }
-
 ocr = ddddocr.DdddOcr()
 
 
@@ -23,7 +23,7 @@ def ddocr(file):
 
 def get_user_all():
     """读取csv至字典"""
-    csvFile = open("1.csv", "r", encoding='gbk')
+    csvFile = open("data.csv", "r", encoding='gbk')
     reader = csv.reader(csvFile)
     # 建立空字典
     result = {}

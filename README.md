@@ -1,32 +1,34 @@
-# Ľ����ˢ�νű�
+# 慕课网刷课脚本
 
-> ����`python<=3.9`
+> ddddorc 自动打码必须 基于`python<=3.9`，请务必安装3.9以下版本
 
-## ����ɹ���
+## 已完成功能
 
-- [x] ��Ŀ��ʼ������
-- [x] ������ȡcsv�ļ��˺�
-- [x] �Զ�������֤��
-- [x] �Զ�ˢ��
-- [ ] selenium ����
-- [ ] ���߳�ˢ��
-- [ ] ���𵽷�����
+- [x] 项目初始化创建
+- [x] 批量读取csv文件账号
+- [x] 自动输入验证码
+- [x] 自动刷课
+- [x] 增加UA线程池
+- [ ] 增加刷课完成报告
+- [ ] selenium 答题
+- [ ] 多线程刷课
+- [ ] 部署到服务器
 
-## ��װ
+## 安装
 
 ```git
-1 -- ����
+1 -- 下载
 git clone https://github.com/ranyong1997/sk.git
 
-2 -- ��װ
-ʹ��pip��װ�� `pip install -r requirements.txt`
-�廪����Դ��װ��pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
+2 -- 安装
+使用pip安装： `pip install -r requirements.txt`
+清华镜像源安装：pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
 
-3 -- ����
-python manage.py
+3 -- 运行
+python main.py
 ```
 
-| ������                        |
+| 依赖包                      |
 |----------------------------| 
 | certifi==2021.10.8         | 
 | charset-normalizer==2.0.12 | 
@@ -41,7 +43,8 @@ python manage.py
 | requests==2.27.1           | 
 | protobuf==3.19.4           | 
 | urllib3==1.26.9            | 
+| fake_useragent==0.1.11     | 
 
-## Ч��
-> ���н�ͼ��
+## 效果
+> 运行截图：
 ![1](./image/1.png)
