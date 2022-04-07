@@ -20,5 +20,5 @@ User_Agent_List = list(User_Agent_Set)
 print(len(User_Agent_List))
 
 # 将UA保存到文件中
-with open('ua.json', 'w') as f:
+with open('../Ua_download/ua.json', 'w') as f:
     json.dump(User_Agent_List, f)
