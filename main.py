@@ -36,11 +36,8 @@ def get_user_all():
     return result
 
 
-print(get_user_all())
-
-
 # 0.登录，拿到cookie------>https://mooc.icve.com.cn/portal/LoginMooc/loginSystem
-def login():
+def login(key, value):
     '''登录'''
     # 验证码https://mooc.icve.com.cn/portal/LoginMooc/getVerifyCode?ts=1608968080542
     codeUrl = "https://mooc.icve.com.cn/portal/LoginMooc/getVerifyCode?ts={}".format(
@@ -51,16 +48,16 @@ def login():
         f.write(codeResult.content)
     code_cookies = codeResult.cookies  # 获取验证码cookies
     r = ddocr('moocCode.jpg')  # 识别验证码
-    for key, value in get_user_all().items():
-        print("---------->正在读取{}账号".format(key))
-        result = requests.post(url=loginUrl, data={'username': key, 'password': value, 'verifyCode': r},
-                               headers=headers, cookies=code_cookies)
-        if result.status_code == 200:
-            print("登录成功！")
-            return result.cookies
-        else:
-            print("登录失败！")
-            return None
+    # for key, value in get_user_all().items():
+    print("---------->正在登录{}账号".format(key))
+    result = requests.post(url=loginUrl, data={'username': key, 'password': value, 'verifyCode': r},
+                           headers=headers, cookies=code_cookies)
+    if result.status_code == 200:
+        print("登录成功！")
+        return result.cookies
+    else:
+        print("登录失败！")
+        return None
 
 
 # 1.获取所有课程，拿到id-------->https://mooc.icve.com.cn/portal/course/getCourseOpenList
@@ -191,94 +188,94 @@ def statStuProcessCellLogAndTimeLong(cookies, courseOpenId, cellId, videoTimeTot
 
 
 def start():
-    A = len(get_user_all().items())
-    for i in range(1, A + 1):
-        course = getCourseOpenList(login())  # 得到课程 [{'id': 'gtjkawksy5jf7raso8gdq', 'text': '幼儿照护（中级）_第一次开课'}]
-        # 2: {id: "tmhmacetzyzbiypj2kpxsg", text: "国际商务谈判_第三次开课"}
-        # 遍历所有课程
+    for key, value in get_user_all().items():
+        cookies = login(key, value)  # 得到cookies用于后续登录
+        course = getCourseOpenList(cookies)
+        # 一级目录
         for i in course:
-            print("进入课程：" + i['text'])
             time.sleep(1)
-    # 一级目录
-    # 只刷 《国际商务谈判_第三次开课》这门课
-    # for i in course:
-    #     time.sleep(1)
-    #     if i['text'] == "国际商务谈判_第四次开课":
-    #         print("进入课程：" + i['text'])
-    #         moduleList1 = getProcessList(cookies=cookies, courseId=i['id'])
-    #         # [{'id': 'oitwaxas05rp25uktqp8a', 'name': '1．茶艺服务礼仪训练', 'sortOrder': 1, 'percent': 40, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'qotwaxasf7tahcyr6kd8wa', 'name': '2．茶具的认识与使用', 'sortOrder': 2, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'q4twaxasc7nbpxt8pmkjdw', 'name': '3.泡茶操作规范', 'sortOrder': 3, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'q4twaxastoradnurwvdxq', 'name': '4．茶叶认识', 'sortOrder': 4, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'q4twaxasv7zer5q5cks8gg', 'name': '5.泡茶规范与技术', 'sortOrder': 5, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'ritwaxashqlasilv5ziiew', 'name': '6.茶文化解读', 'sortOrder': 6, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}]
-    #         for j in moduleList1:
-    #             time.sleep(0.25)
-    #             print("\t" + j['name'])
-    #             # 二级目录
-    #             moduleList2 = getTopicByModuleId(cookies=cookies, courseId=i['id'], moduleId=j['id'])
-    #             for k in moduleList2:
-    #                 time.sleep(0.25)
-    #                 print("\t\t" + k['name'])
-    #                 # 三级目录
-    #                 moduleList3 = getCellByTopicId(cookies=cookies, courseId=i['id'], topicId=k['id'])
-    #                 for m in moduleList3:
-    #                     time.sleep(0.25)
-    #                     print("\t\t\t" + m['cellName'])
-    #                     # 如果只有三级目录
-    #                     if not len(m['childNodeList']):
-    #                         # =================================================================================================================================
-    #                         # 如果课程完成-不刷课
-    #                         if m['isStudyFinish'] is True:
-    #                             print(
-    #                                 "\t\t\t\t" + m['cellName'] + "\t类型：" + m[
-    #                                     'categoryName'] + "\t\t------课程完成，不刷课-------")
-    #                             continue
-    #                         # 拿课程信息
-    #                         info = viewDirectory(cookies=cookies, courseOpenId=m['courseOpenId'], cellId=m['Id'])
-    #                         # 将信息拿去刷课
-    #                         if not m['categoryName'] == "视频" and not m['categoryName'] == "音频":
-    #                             # 如果不是视频或者音频
-    #                             isOK = statStuProcessCellLogAndTimeLong(cookies=cookies,
-    #                                                                     courseOpenId=info['CourseOpenId'],
-    #                                                                     cellId=info['Id'],
-    #                                                                     videoTimeTotalLong=0)
-    #                         # 四级目录(最终)
-    #                         else:
-    #                             # 是视频或者音频
-    #                             isOK = statStuProcessCellLogAndTimeLong(cookies=cookies,
-    #                                                                     courseOpenId=info['CourseOpenId'],
-    #                                                                     cellId=info['Id'],
-    #                                                                     videoTimeTotalLong=info['VideoTimeLong'])
-    #                         if isOK['code'] == 1 and isOK['isStudy'] is True:
-    #                             print("\t\t\t\t" + m['cellName'] + "\t类型：" + m['categoryName'] + "\t\t-----刷课OK----")
-    #                         else:
-    #                             print("\t\t\t\t" + m['cellName'] + "\t类型：" + m['categoryName'] + "\t\t-----ERROR----")
-    #                     else:
-    #                         # =================================================================================================================================
-    #                         for n in m['childNodeList']:
-    #                             time.sleep(0.5)
-    #                             # 如果课程完成-不刷课
-    #                             if n['isStudyFinish'] is True:
-    #                                 print("\t\t\t\t" + n['cellName'] + "\t类型：" + n[
-    #                                     'categoryName'] + "\t\t------课程完成，不刷课-------")
-    #                                 continue
-    #                             # 拿课程信息
-    #                             info = viewDirectory(cookies=cookies, courseOpenId=n['courseOpenId'], cellId=n['Id'])
-    #                             # 将信息拿去刷课
-    #                             if not n['categoryName'] == "视频" and not n['categoryName'] == "音频":
-    #                                 # 如果不是视频或者音频
-    #                                 isOK = statStuProcessCellLogAndTimeLong(cookies=cookies,
-    #                                                                         courseOpenId=info['CourseOpenId'],
-    #                                                                         cellId=info['Id'],
-    #                                                                         videoTimeTotalLong=0)
-    #                             else:
-    #                                 # 是视频或者音频
-    #                                 isOK = statStuProcessCellLogAndTimeLong(cookies=cookies,
-    #                                                                         courseOpenId=info['CourseOpenId'],
-    #                                                                         cellId=info['Id'],
-    #                                                                         videoTimeTotalLong=info['VideoTimeLong'])
-    #                             if isOK['code'] == 1 and isOK['isStudy'] is True:
-    #                                 print(
-    #                                     "\t\t\t\t" + n['cellName'] + "\t类型：" + n['categoryName'] + "\t\t-----刷课OK----")
-    #                             else:
-    #                                 print(
-    #                                     "\t\t\t\t" + n['cellName'] + "\t类型：" + n['categoryName'] + "\t\t-----ERROR----")
+            if i['text'] == "国际商务谈判_第四次开课":  # 只刷 《国际商务谈判_第三次开课》这门课
+                print("进入课程：" + i['text'])
+                moduleList1 = getProcessList(cookies=cookies, courseId=i['id'])
+                # [{'id': 'oitwaxas05rp25uktqp8a', 'name': '1．茶艺服务礼仪训练', 'sortOrder': 1, 'percent': 40, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'qotwaxasf7tahcyr6kd8wa', 'name': '2．茶具的认识与使用', 'sortOrder': 2, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'q4twaxasc7nbpxt8pmkjdw', 'name': '3.泡茶操作规范', 'sortOrder': 3, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'q4twaxastoradnurwvdxq', 'name': '4．茶叶认识', 'sortOrder': 4, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'q4twaxasv7zer5q5cks8gg', 'name': '5.泡茶规范与技术', 'sortOrder': 5, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'ritwaxashqlasilv5ziiew', 'name': '6.茶文化解读', 'sortOrder': 6, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}]
+                for j in moduleList1:
+                    time.sleep(0.25)
+                    print("\t" + j['name'])
+                    # 二级目录
+                    moduleList2 = getTopicByModuleId(cookies=cookies, courseId=i['id'], moduleId=j['id'])
+                    for k in moduleList2:
+                        time.sleep(0.25)
+                        print("\t\t" + k['name'])
+                        # 三级目录
+                        moduleList3 = getCellByTopicId(cookies=cookies, courseId=i['id'], topicId=k['id'])
+                        for m in moduleList3:
+                            time.sleep(0.25)
+                            print("\t\t\t" + m['cellName'])
+                            # 如果只有三级目录
+                            if not len(m['childNodeList']):
+                                # =================================================================================================================================
+                                # 如果课程完成-不刷课
+                                if m['isStudyFinish'] is True:
+                                    print(
+                                        "\t\t\t\t" + m['cellName'] + "\t类型：" + m[
+                                            'categoryName'] + "\t\t------课程完成，不刷课-------")
+                                    continue
+                                # 拿课程信息
+                                info = viewDirectory(cookies=cookies, courseOpenId=m['courseOpenId'], cellId=m['Id'])
+                                # 将信息拿去刷课
+                                if not m['categoryName'] == "视频" and not m['categoryName'] == "音频":
+                                    # 如果不是视频或者音频
+                                    isOK = statStuProcessCellLogAndTimeLong(cookies=cookies,
+                                                                            courseOpenId=info['CourseOpenId'],
+                                                                            cellId=info['Id'],
+                                                                            videoTimeTotalLong=0)
+                                # 四级目录(最终)
+                                else:
+                                    # 是视频或者音频
+                                    isOK = statStuProcessCellLogAndTimeLong(cookies=cookies,
+                                                                            courseOpenId=info['CourseOpenId'],
+                                                                            cellId=info['Id'],
+                                                                            videoTimeTotalLong=info['VideoTimeLong'])
+                                if isOK['code'] == 1 and isOK['isStudy'] is True:
+                                    print(
+                                        "\t\t\t\t" + m['cellName'] + "\t类型：" + m['categoryName'] + "\t\t-----刷课OK----")
+                                else:
+                                    print(
+                                        "\t\t\t\t" + m['cellName'] + "\t类型：" + m['categoryName'] + "\t\t-----ERROR----")
+                            else:
+                                # =================================================================================================================================
+                                for n in m['childNodeList']:
+                                    time.sleep(0.5)
+                                    # 如果课程完成-不刷课
+                                    if n['isStudyFinish'] is True:
+                                        print("\t\t\t\t" + n['cellName'] + "\t类型：" + n[
+                                            'categoryName'] + "\t\t------课程完成，不刷课-------")
+                                        continue
+                                    # 拿课程信息
+                                    info = viewDirectory(cookies=cookies, courseOpenId=n['courseOpenId'],
+                                                         cellId=n['Id'])
+                                    # 将信息拿去刷课
+                                    if not n['categoryName'] == "视频" and not n['categoryName'] == "音频":
+                                        # 如果不是视频或者音频
+                                        isOK = statStuProcessCellLogAndTimeLong(cookies=cookies,
+                                                                                courseOpenId=info['CourseOpenId'],
+                                                                                cellId=info['Id'],
+                                                                                videoTimeTotalLong=0)
+                                    else:
+                                        # 是视频或者音频
+                                        isOK = statStuProcessCellLogAndTimeLong(cookies=cookies,
+                                                                                courseOpenId=info['CourseOpenId'],
+                                                                                cellId=info['Id'],
+                                                                                videoTimeTotalLong=info[
+                                                                                    'VideoTimeLong'])
+                                    if isOK['code'] == 1 and isOK['isStudy'] is True:
+                                        print(
+                                            "\t\t\t\t" + n['cellName'] + "\t类型：" + n[
+                                                'categoryName'] + "\t\t-----刷课OK----")
+                                    else:
+                                        print(
+                                            "\t\t\t\t" + n['cellName'] + "\t类型：" + n[
+                                                'categoryName'] + "\t\t-----ERROR----")
 
 
 if __name__ == '__main__':
