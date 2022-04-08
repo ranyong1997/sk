@@ -5,11 +5,11 @@ import json
 import ddddocr
 from common import UA as UA_tools
 
+ocr = ddddocr.DdddOcr()
+
 headers = {
     'User-Agent': UA_tools.getRandomUA()  # 这里就调用了自己的工具库的方法来随机获取UA
-    # 'User-Agent': "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; chromeframe/11.0.696.57)",
 }
-ocr = ddddocr.DdddOcr()
 
 
 def ddocr(file):
