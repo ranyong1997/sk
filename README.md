@@ -12,7 +12,7 @@
 - [x] 增加刷课完成报告
 - [ ] selenium 答题
 - [ ] 多线程刷课
-- [ ] 部署到服务器
+- [x] 部署到服务器
 
 ## 安装
 
@@ -26,6 +26,10 @@ git clone https://github.com/ranyong1997/sk.git
 
 3 -- 运行
 python main.py
+
+4 -- linux运行
+nohup sh run.sh >> sk.log 2>&1 &
+tail -f sk.log
 ```
 
 | 依赖包                      |
