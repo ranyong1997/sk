@@ -48,3 +48,4 @@ python main.py
 ## 效果
 > 运行截图：
 ![1](./image/1.png)
+![2](./image/2.png)
