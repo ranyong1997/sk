@@ -154,4 +154,5 @@ cython_debug/
 moocCode.jpg
 data/data.csv
 data/1.csv
+data/2.csv
 debug.py
