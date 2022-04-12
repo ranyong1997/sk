@@ -196,6 +196,13 @@ def start():
             time.sleep(1)
             if i['text'] == "国际商务谈判_第四次开课":  # 只刷 《国际商务谈判_第三次开课》这门课
                 print("进入课程：" + i['text'])
+                # 写入csv
+                with open('data/2.csv', 'w', newline='') as f:
+                    writer = csv.writer(f)
+                    writer.writerow(
+                        ['账号', '密码', '状态'])
+                    for key, value in get_user_all().items():
+                        writer.writerow([key, value, '已刷'])
                 moduleList1 = getProcessList(cookies=cookies, courseId=i['id'])
                 # [{'id': 'oitwaxas05rp25uktqp8a', 'name': '1．茶艺服务礼仪训练', 'sortOrder': 1, 'percent': 40, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'qotwaxasf7tahcyr6kd8wa', 'name': '2．茶具的认识与使用', 'sortOrder': 2, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'q4twaxasc7nbpxt8pmkjdw', 'name': '3.泡茶操作规范', 'sortOrder': 3, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'q4twaxastoradnurwvdxq', 'name': '4．茶叶认识', 'sortOrder': 4, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'q4twaxasv7zer5q5cks8gg', 'name': '5.泡茶规范与技术', 'sortOrder': 5, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'ritwaxashqlasilv5ziiew', 'name': '6.茶文化解读', 'sortOrder': 6, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}]
                 for j in moduleList1:
@@ -276,13 +283,7 @@ def start():
                                         print(
                                             "\t\t\t\t" + n['cellName'] + "\t类型：" + n[
                                                 'categoryName'] + "\t\t-----ERROR----")
-    # 写入csv
-    with open('data/2.csv', 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(
-            ['账号', '密码', '状态'])
-        for key, value in get_user_all().items():
-            writer.writerow([key, value, '已刷'])
+
 
 
 if __name__ == '__main__':
