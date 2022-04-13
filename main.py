@@ -285,6 +285,5 @@ def start():
                                                 'categoryName'] + "\t\t-----ERROR----")
 
 
-
 if __name__ == '__main__':
     start()

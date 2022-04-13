@@ -1,15 +1,10 @@
 # -*- coding: utf-8 -*-
-import ddddocr
+
 import common.initMooc as mooc_init
 import common.lookVideo as mook_video
 import common.workMain as mooc_work
 
 # ****************************************** 配置 ******************************************
-
-ocr = ddddocr.DdddOcr()
-
-
-
 # 账号1(大号)
 username1 = "cqzngczyxy45"  # 账号
 password1 = "cqzngczyxy@123"  # 密码

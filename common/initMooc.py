@@ -5,11 +5,23 @@ from io import BytesIO
 import ddddocr
 import requests
 from PIL import Image
+from common import UA as UA_tools
 
 BASE_URL = 'https://mooc.icve.com.cn'
-
+ocr = ddddocr.DdddOcr()
 # 登录
 LOGIN_SYSTEM_URL = BASE_URL + '/portal/LoginMooc/loginSystem'
+
+
+
+def ddocr(file):
+    try:
+        with open(file, 'rb') as f:
+            img_bytes = f.read()
+        res = ocr.classification(img_bytes)
+        return res
+    except:
+        print("获取验证码失败，请继续！")
 
 
 def auto_identify_verify_code(verify_code_content):
@@ -18,7 +30,6 @@ def auto_identify_verify_code(verify_code_content):
     :param verify_code_content: 验证码 content
     :return: 验证码
     """
-    print("\t-->进行自动识别验证码 ~ ", end="")
     try:
         ocr = ddddocr.DdddOcr(show_ad=False)
         res = ocr.classification(verify_code_content)
@@ -35,15 +46,24 @@ def manual_identify_verify_code(verify_code_content):
     :param verify_code_content: 验证码 content
     :return: 验证码
     """
-    Image.open(BytesIO(verify_code_content)).show()
-    return input("请输入验证码：")
+    # Image.open(BytesIO(verify_code_content)).show()
+    print("\t-->进行自动识别验证码 ~ ", end="")
+    try:
+        ocr = ddddocr.DdddOcr(show_ad=False)
+        res = ocr.classification(verify_code_content)
+        print("识别成功:" + str(res))
+        return res
+    except Exception as e:
+        print("识别失败:" + str(e))
+        return "xxxx"
+    return res
 
 
 def to_url(name, password, login_fail_num):
-    code_url = "https://mooc.icve.com.cn/portal/LoginMooc/getVerifyCode?ts={}".format(time.time())
+    code_url = "https://mooc.icve.com.cn/portal/LoginMooc/getVerifyCode?ts={}".format(round(time.time() * 2000))
     code_result = requests.post(url=code_url)
     # ----------去除自动输入验证码start
-    if login_fail_num < 3:
+    if login_fail_num < 5:
         code_value = auto_identify_verify_code(code_result.content)
     else:
         code_value = manual_identify_verify_code(code_result.content)
