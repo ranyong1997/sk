@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 import time
-from io import BytesIO
-
+import csv
 import ddddocr
 import requests
 from PIL import Image
+from io import BytesIO
 from common import UA as UA_tools
 
 BASE_URL = 'https://mooc.icve.com.cn'
 ocr = ddddocr.DdddOcr()
 # 登录
 LOGIN_SYSTEM_URL = BASE_URL + '/portal/LoginMooc/loginSystem'
-
 
 
 def ddocr(file):
@@ -98,3 +97,24 @@ def login(name, password):  # 0.登录
             print("\t\t--->", json_result['msg'])
             login_fail_num += 1
     raise Exception("账号:" + str(name) + " 登录失败")
+
+
+def get_user_all():
+    """读取csv至字典"""
+    # csvFile = open("../data/1.csv", "r", encoding='gbk')
+    csvFile = open("data/1.csv", "r", encoding='gbk')
+    reader = csv.reader(csvFile)
+    # 建立空字典
+    result = {}
+    for item in reader:
+        # 忽略第一行
+        if reader.line_num == 1:
+            continue
+        result[item[0]] = item[1]
+    csvFile.close()
+    return result
+
+
+# if __name__ == '__main__':
+#     for key, value in get_user_all().items():
+#         login(key, value)  # 得到cookies用于后续登录
