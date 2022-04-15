@@ -153,6 +153,6 @@ cython_debug/
 *.csv
 moocCode.jpg
 data/data.csv
-data/1.csv
-data/2.csv
 debug.py
+data/err.csv
+data/success.csv
