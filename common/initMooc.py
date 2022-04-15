@@ -102,7 +102,7 @@ def login(name, password):  # 0.登录
 def get_user_all():
     """读取csv至字典"""
     # csvFile = open("../data/1.csv", "r", encoding='gbk')
-    csvFile = open("data/1.csv", "r", encoding='gbk')
+    csvFile = open("data/data.csv", "r", encoding='gbk')
     reader = csv.reader(csvFile)
     # 建立空字典
     result = {}

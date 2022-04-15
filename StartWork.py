@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import ddddocr
 import csv
+import ddddocr
 import common.initMooc as mooc_init
 import common.lookVideo as mook_video
 import common.workMain as mooc_work
@@ -18,22 +18,16 @@ for key, value in mooc_init.get_user_all().items():
     password2 = "test_520"  # 密码
     # 账号1(大号)刷课
     is_look_video = True
-
     # 小号退出所有课程
     is_withdraw_course = False
-
     # 做作业
     is_work_exam_type0 = True
-
     # 做测验
     is_work_exam_type1 = True
-
     # 考试
     is_work_exam_type2 = True
-
     # 大于90分的不进行再次作答
     is_work_score = 90
-
     # 需要跳过的课程，填写方式例： ['大学语文', '高等数学']
     is_continue_work = []
 
@@ -52,18 +46,23 @@ for key, value in mooc_init.get_user_all().items():
         return ck
 
 
-    def start():
+    if __name__ == '__main__':
         user_cookies = save_cookies()
         work_exam_type_map = {0: '作业', 1: '测验', 2: '考试'}
         if is_look_video:
             mook_video.start(user_cookies['ck1'])
             print(">>> 刷课程序运行结束")
-
+            with open('data/success.csv', 'a+', newline='', encoding='utf-8') as f:
+                writer = csv.writer(f)
+                writer.writerow([key, value, '已刷'])
         if not user_cookies.get('ck2', None):
+            with open('data/err.csv', 'a+', newline='', encoding='utf-8') as f:
+                writer = csv.writer(f)
+                writer.writerow(
+                    ['账号', '密码', '状态'])
+                writer.writerow([key, value, '异常'])
             exit(0)
-
         print('-' * 60, '\n' + '-' * 23, '初始化课程中！', '-' * 23, '\n' + '-' * 60, '\n')
-
         # 0.获取小号的所有课程
         username2course = mooc_work.getMyCourse(user_cookies['ck2'])['list']
         print('[小号] ============= 获取所有课程: \n\t~ %s' % '\n\t~ '.join([x['courseName'] for x in username2course]))
@@ -111,7 +110,3 @@ for key, value in mooc_init.get_user_all().items():
                 mooc_work.run_start_work(user_cookies['ck1'], user_cookies['ck2'], t, u1course['courseOpenId'],
                                          is_work_score)
         print('\n' + '=' * 111, '\n' + '=' * 20, '运行结束 感谢使用', '=' * 20, '\n' + '=' * 111, '\n')
-
-
-if __name__ == '__main__':
-    start()
