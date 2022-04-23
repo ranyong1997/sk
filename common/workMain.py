@@ -10,7 +10,6 @@ import json
 import logging
 import random
 import requests
-from common import UA as UA_tools
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -54,7 +53,7 @@ GET_ALL_COURSE_CLASS_URL = BASE_URL + '/portal/Course/getAllCourseClass'
 ADD_MY_MOOC_COURSE = BASE_URL + '/study/Learn/addMyMoocCourse'
 
 HEADERS = {
-    'User-Agent': UA_tools.getRandomUA()
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36'
 }
 
 

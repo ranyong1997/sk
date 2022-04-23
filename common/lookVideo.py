@@ -10,12 +10,12 @@ import random
 import time
 import traceback
 import requests
-from common import UA as UA_tools
 
 
 headers = {
-     'User-Agent': UA_tools.getRandomUA()
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
 }
+
 
 is_work_ = ['国际商务谈判']  # 需要刷单门课
 

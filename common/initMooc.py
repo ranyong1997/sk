@@ -12,7 +12,6 @@ from io import BytesIO
 import ddddocr
 import requests
 from PIL import Image
-from common import UA as UA_tools
 
 BASE_URL = 'https://mooc.icve.com.cn'
 
@@ -20,7 +19,7 @@ BASE_URL = 'https://mooc.icve.com.cn'
 LOGIN_SYSTEM_URL = BASE_URL + '/portal/LoginMooc/loginSystem'
 
 HEADERS = {
-    'User-Agent': UA_tools.getRandomUA()
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36'
 }
 
 
