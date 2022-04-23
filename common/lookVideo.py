@@ -14,7 +14,7 @@ from common import UA as UA_tools
 
 
 headers = {
-    'User-Agent': UA_tools.getRandomUA()
+     'User-Agent': UA_tools.getRandomUA()
 }
 
 is_work_ = ['国际商务谈判']  # 需要刷单门课

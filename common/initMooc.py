@@ -67,7 +67,7 @@ def to_url(name, password, login_fail_num):
     code_url = "https://mooc.icve.com.cn/portal/LoginMooc/getVerifyCode?ts={}".format(time.time())
     code_result = requests.post(url=code_url, headers=HEADERS)
     # ----------去除自动输入验证码start
-    if login_fail_num < 4:
+    if login_fail_num < 6:
         code_value = auto_identify_verify_code(code_result.content)
     # else:
     #     code_value = manual_identify_verify_code(code_result.content)
