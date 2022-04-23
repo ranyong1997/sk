@@ -5,6 +5,7 @@
 # @Site    : 
 # @File    : StartWork.py
 # @Software: PyCharm
+import csv
 import common.initMooc as mooc_init
 import common.lookVideo as mook_video
 import common.workMain as mooc_work
@@ -99,9 +100,7 @@ for key, value in mooc_init.get_user_all().items():
         # 4.再次查看小号课程
         username2course = mooc_work.getMyCourse(user_cookies['ck2'])['list']
         print('[小号] ============= 获取所有课程: \n\t~ %s' % '\n\t~ '.join([x['courseName'] for x in username2course]))
-
         print('\n' + '-' * 65, '\n' + '-' * 20, '初始化课程成功，开始答题！', '-' * 20, '\n' + '-' * 65, '\n')
-
         # 5.小号做作业，考试，测验
         work_exam_type = []
         if is_work_exam_type0:
