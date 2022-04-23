@@ -1,36 +1,46 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import csv
-import ddddocr
+# @Time    : 2022/4/23 9:58 AM
+# @Author  : ranyong
+# @Site    : 
+# @File    : StartWork.py
+# @Software: PyCharm
 import common.initMooc as mooc_init
 import common.lookVideo as mook_video
 import common.workMain as mooc_work
 
 # ****************************************** 配置 ******************************************
-
-ocr = ddddocr.DdddOcr()
-
 for key, value in mooc_init.get_user_all().items():
     # 账号1(大号)
-    username1 = key
-    password1 = value
+    username1 = key  # 账号
+    password1 = value  # 密码
     # 账号2(小号)
     username2 = "20175020140"  # 账号
     password2 = "test_520"  # 密码
+
     # 账号1(大号)刷课
     is_look_video = True
+
     # 小号退出所有课程
     is_withdraw_course = False
+
     # 做作业
     is_work_exam_type0 = True
+
     # 做测验
     is_work_exam_type1 = True
+
     # 考试
     is_work_exam_type2 = True
+
     # 大于90分的不进行再次作答
     is_work_score = 90
+
     # 需要跳过的课程，填写方式例： ['大学语文', '高等数学']
     is_continue_work = []
 
+
+    # ****************************************** 结束 ******************************************
 
     def save_cookies():  # 登录
         ck = {}
@@ -50,7 +60,7 @@ for key, value in mooc_init.get_user_all().items():
         user_cookies = save_cookies()
         work_exam_type_map = {0: '作业', 1: '测验', 2: '考试'}
         if is_look_video:
-            mook_video.start(user_cookies['ck1'])
+            mook_video.start(user_cookies['ck1'], is_continue_work)
             print(">>> 刷课程序运行结束")
             with open('data/success.csv', 'a+', newline='', encoding='utf-8') as f:
                 writer = csv.writer(f)
@@ -105,8 +115,10 @@ for key, value in mooc_init.get_user_all().items():
                 if u1course['courseName'] in is_continue_work:
                     print('【大号】 跳过课程 \t当前课程 \t【%s】' % u1course['courseName'])
                     continue
-                    # 6.大号开始答题
+                # 6.大号开始答题
                 print('【大号】 开始答题 \t当前课程 \t【%s】' % u1course['courseName'])
                 mooc_work.run_start_work(user_cookies['ck1'], user_cookies['ck2'], t, u1course['courseOpenId'],
                                          is_work_score)
-        print('\n' + '=' * 111, '\n' + '=' * 20, '运行结束 感谢使用', '=' * 20, '\n' + '=' * 111, '\n')
+        print('\n' + '=' * 111, '\n' + '=' * 20, '运行结束 感谢使用',
+              '=' * 20,
+              '\n' + '=' * 111, '\n')

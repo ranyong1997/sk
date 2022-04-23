@@ -24,7 +24,7 @@ def ddocr(file):
 
 def get_user_all():
     """读取csv至字典"""
-    csvFile = open("data/1.csv", "r", encoding='gbk')
+    csvFile = open("data/data.csv", "r", encoding='gbk')
     reader = csv.reader(csvFile)
     # 建立空字典
     result = {}
@@ -42,7 +42,7 @@ def login(key, value):
     '''登录'''
     # 验证码https://mooc.icve.com.cn/portal/LoginMooc/getVerifyCode?ts=1608968080542
     codeUrl = "https://mooc.icve.com.cn/portal/LoginMooc/getVerifyCode?ts={}".format(
-        int(round(time.time() * 2000)))
+        int(round(time.time() * 4000)))
     loginUrl = "https://mooc.icve.com.cn/portal/LoginMooc/loginSystem"
     codeResult = requests.post(url=codeUrl, headers=headers)
     with open("moocCode.jpg", "wb", ) as f:
@@ -193,7 +193,7 @@ def start():
         course = getCourseOpenList(cookies)
         # 一级目录
         for i in course:
-            time.sleep(1)
+            time.sleep(2)
             if i['text'] == "国际商务谈判_第四次开课":  # 只刷 《国际商务谈判_第三次开课》这门课
                 print("进入课程：" + i['text'])
                 # 写入csv
@@ -206,17 +206,17 @@ def start():
                 moduleList1 = getProcessList(cookies=cookies, courseId=i['id'])
                 # [{'id': 'oitwaxas05rp25uktqp8a', 'name': '1．茶艺服务礼仪训练', 'sortOrder': 1, 'percent': 40, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'qotwaxasf7tahcyr6kd8wa', 'name': '2．茶具的认识与使用', 'sortOrder': 2, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'q4twaxasc7nbpxt8pmkjdw', 'name': '3.泡茶操作规范', 'sortOrder': 3, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'q4twaxastoradnurwvdxq', 'name': '4．茶叶认识', 'sortOrder': 4, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'q4twaxasv7zer5q5cks8gg', 'name': '5.泡茶规范与技术', 'sortOrder': 5, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}, {'id': 'ritwaxashqlasilv5ziiew', 'name': '6.茶文化解读', 'sortOrder': 6, 'percent': 0, 'ModuleType': 1, 'ResId': '', 'isUnlock': True}]
                 for j in moduleList1:
-                    time.sleep(0.25)
+                    time.sleep(1)
                     print("\t" + j['name'])
                     # 二级目录
                     moduleList2 = getTopicByModuleId(cookies=cookies, courseId=i['id'], moduleId=j['id'])
                     for k in moduleList2:
-                        time.sleep(0.25)
+                        time.sleep(1)
                         print("\t\t" + k['name'])
                         # 三级目录
                         moduleList3 = getCellByTopicId(cookies=cookies, courseId=i['id'], topicId=k['id'])
                         for m in moduleList3:
-                            time.sleep(0.25)
+                            time.sleep(1)
                             print("\t\t\t" + m['cellName'])
                             # 如果只有三级目录
                             if not len(m['childNodeList']):
@@ -252,7 +252,7 @@ def start():
                             else:
                                 # =================================================================================================================================
                                 for n in m['childNodeList']:
-                                    time.sleep(0.5)
+                                    time.sleep(1)
                                     # 如果课程完成-不刷课
                                     if n['isStudyFinish'] is True:
                                         print("\t\t\t\t" + n['cellName'] + "\t类型：" + n[

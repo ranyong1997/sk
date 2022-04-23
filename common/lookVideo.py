@@ -1,4 +1,10 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# @Time    : 2022/4/23 9:57 AM
+# @Author  : ranyong
+# @Site    : 
+# @File    : lookVideo.py
+# @Software: PyCharm
 import json
 import random
 import time
@@ -6,11 +12,12 @@ import traceback
 import requests
 from common import UA as UA_tools
 
+
 headers = {
-    'User-Agent': UA_tools.getRandomUA()  # 这里就调用了自己的工具库的方法来随机获取UA
+    'User-Agent': UA_tools.getRandomUA()
 }
 
-is_work_ = ['国际商务谈判'] # 需要刷单门课
+is_work_ = ['国际商务谈判']  # 需要刷单门课
 
 
 # 1.获取所有课程，拿到id-------->
@@ -104,7 +111,7 @@ def statStuProcessCellLogAndTimeLong(cookies, courseOpenId, cellId, videoTimeTot
     :param videoTimeTotalLong: videoTimeTotalLong
     :return:
     """
-    time.sleep(1.5)
+    time.sleep(2)
     url = "https://mooc.icve.com.cn/study/learn/statStuProcessCellLogAndTimeLong"
     if videoTimeTotalLong != 0:
         videoTimeTotalLong += random.randint(20, 100)
@@ -118,7 +125,7 @@ def statStuProcessCellLogAndTimeLong(cookies, courseOpenId, cellId, videoTimeTot
     return result
 
 
-def start(cookies):
+def start(cookies, is_continue_work):
     try:
         course = getCourseOpenList(cookies)
     except Exception as e:
@@ -132,8 +139,6 @@ def start(cookies):
     print("------------------------------------------------------------3S后将开始刷课")
     time.sleep(3)
     for i in course:
-        # if i['courseName'] != "妇科护理":
-        #     continue
         if i['courseName'] == is_work_:  # 只刷 《国际商务谈判_第三次开课》这门课
             print("进入课程：" + i['courseName'])
             time.sleep(1)
@@ -148,7 +153,7 @@ def start(cookies):
                 moduleList1 = getProcessList(cookies=cookies, courseId=i['courseOpenId'])
                 pass
             for j in moduleList1:
-                time.sleep(0.25)
+                time.sleep(0.5)
                 if j['percent'] == 100:
                     print("\t跳过课程: " + j['name'] + '课程已刷进度 100%')
                     continue
@@ -164,7 +169,7 @@ def start(cookies):
                     moduleList2 = getTopicByModuleId(cookies=cookies, courseId=i['courseOpenId'], moduleId=j['id'])
                     pass
                 for k in moduleList2:
-                    time.sleep(0.25)
+                    time.sleep(0.5)
                     if k['studyStatus'] == 1:
                         print("\t\t跳过已刷章节: " + k['name'])
                         continue
@@ -180,7 +185,7 @@ def start(cookies):
                         moduleList3 = getCellByTopicId(cookies=cookies, courseId=i['courseOpenId'], topicId=k['id'])
                         pass
                     for m in moduleList3:
-                        time.sleep(0.25)
+                        time.sleep(0.5)
                         print("\t\t\t" + m['cellName'])
                         # 如果只有三级目录
                         if not len(m['childNodeList']):

@@ -1,26 +1,27 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import time
+# @Time    : 2022/4/23 9:56 AM
+# @Author  : ranyong
+# @Site    : 
+# @File    : initMooc.py
+# @Software: PyCharm
+import os
 import csv
+import time
+from io import BytesIO
 import ddddocr
 import requests
 from PIL import Image
-from io import BytesIO
 from common import UA as UA_tools
 
 BASE_URL = 'https://mooc.icve.com.cn'
-ocr = ddddocr.DdddOcr()
+
 # 登录
 LOGIN_SYSTEM_URL = BASE_URL + '/portal/LoginMooc/loginSystem'
 
-
-def ddocr(file):
-    try:
-        with open(file, 'rb') as f:
-            img_bytes = f.read()
-        res = ocr.classification(img_bytes)
-        return res
-    except:
-        print("获取验证码失败，请继续！")
+HEADERS = {
+    'User-Agent': UA_tools.getRandomUA()
+}
 
 
 def auto_identify_verify_code(verify_code_content):
@@ -29,6 +30,7 @@ def auto_identify_verify_code(verify_code_content):
     :param verify_code_content: 验证码 content
     :return: 验证码
     """
+    print("\t-->进行自动识别验证码 ~ ", end="")
     try:
         ocr = ddddocr.DdddOcr(show_ad=False)
         res = ocr.classification(verify_code_content)
@@ -45,36 +47,39 @@ def manual_identify_verify_code(verify_code_content):
     :param verify_code_content: 验证码 content
     :return: 验证码
     """
-    # Image.open(BytesIO(verify_code_content)).show()
-    print("\t-->进行自动识别验证码 ~ ", end="")
     try:
-        ocr = ddddocr.DdddOcr(show_ad=False)
-        res = ocr.classification(verify_code_content)
-        print("识别成功:" + str(res))
-        return res
+        Image.open(BytesIO(verify_code_content)).show()
+        verify_code_content_value = input("请输入验证码：")
     except Exception as e:
-        print("识别失败:" + str(e))
-        return "xxxx"
-    return res
+        print(e)
+        verify_code_file = './verify_code.jpg'
+        print('打开验证码失败!!! 请前往该项目根目录找到并打开 verify_code.jpg 后输入验证码!!!')
+        with open(verify_code_file, "wb", ) as f:
+            f.write(verify_code_content)
+        verify_code_content_value = input("请输入验证码：")
+        # 删除验证码照片
+        if os.path.exists(verify_code_file):
+            os.remove(verify_code_file)
+    return verify_code_content_value
 
 
 def to_url(name, password, login_fail_num):
-    code_url = "https://mooc.icve.com.cn/portal/LoginMooc/getVerifyCode?ts={}".format(round(time.time() * 2000))
-    code_result = requests.post(url=code_url)
+    code_url = "https://mooc.icve.com.cn/portal/LoginMooc/getVerifyCode?ts={}".format(time.time())
+    code_result = requests.post(url=code_url, headers=HEADERS)
     # ----------去除自动输入验证码start
-    if login_fail_num < 5:
+    if login_fail_num < 4:
         code_value = auto_identify_verify_code(code_result.content)
-    else:
-        code_value = manual_identify_verify_code(code_result.content)
+    # else:
+    #     code_value = manual_identify_verify_code(code_result.content)
     # ----------去除自动输入验证码end
-    code_value = manual_identify_verify_code(code_result.content)
+    # code_value = manual_identify_verify_code(code_result.content)
     # ----------改为手动输入验证码
     data = {
         'userName': name,
         'password': password,
         'verifycode': code_value
     }
-    result = requests.post(url=LOGIN_SYSTEM_URL, data=data, cookies=code_result.cookies)
+    result = requests.post(url=LOGIN_SYSTEM_URL, data=data, cookies=code_result.cookies, headers=HEADERS)
     return result
 
 
@@ -101,7 +106,7 @@ def login(name, password):  # 0.登录
 
 def get_user_all():
     """读取csv至字典"""
-    # csvFile = open("../data/1.csv", "r", encoding='gbk')
+    # csvFile = open("../data/data.csv", "r", encoding='gbk')
     csvFile = open("data/data.csv", "r", encoding='gbk')
     reader = csv.reader(csvFile)
     # 建立空字典
@@ -113,8 +118,3 @@ def get_user_all():
         result[item[0]] = item[1]
     csvFile.close()
     return result
-
-
-# if __name__ == '__main__':
-#     for key, value in get_user_all().items():
-#         login(key, value)  # 得到cookies用于后续登录
