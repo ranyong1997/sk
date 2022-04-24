@@ -21,27 +21,19 @@ for key, value in mooc_init.get_user_all().items():
 
     # 账号1(大号)刷课
     is_look_video = True
-
     # 小号退出所有课程
     is_withdraw_course = False
-
     # 做作业
     is_work_exam_type0 = True
-
     # 做测验
     is_work_exam_type1 = True
-
     # 考试
     is_work_exam_type2 = True
-
     # 大于90分的不进行再次作答
     is_work_score = 90
-
     # 需要跳过的课程，填写方式例： ['大学语文', '高等数学']
-    is_continue_work = []
+    is_continue_work = ['注射成型技术', '鞋服陈列设计']
 
-
-    # ****************************************** 结束 ******************************************
 
     def save_cookies():  # 登录
         ck = {}
