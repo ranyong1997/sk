@@ -137,16 +137,17 @@ def run(username1,
             if is_withdraw_course:
                 # 1.退出小号的所有课程
                 for u2course_item in username2course:
-                    work_withdraw_course = mooc_work.withdrawCourse(user_cookies['ck2'], u2course_item['courseOpenId'],
+                    work_withdraw_course = mooc_work.withdrawCourse(user_cookies['ck2'],
+                                                                    u2course_item['courseOpenId'],
                                                                     u2course_item['stuId'])
                     print('[小号退出课程] 结果: %s\t退出课程: %s' % (work_withdraw_course['msg'], u2course_item['courseName']))
-
             # 2.获取大号的所有课程
             username1course = mooc_work.getMyCourse(user_cookies['ck1'])['list']
             print("*" * 40, '大号所有课程', "*" * 40)
             for course_item in username1course:
                 if course_item['courseName'] in is_continue_work:
-                    print('* 【pass】  ', '总进度:', str(course_item['process']) + '%\t\t课程名:', course_item['courseName'])
+                    print('* 【pass】  ', '总进度:', str(course_item['process']) + '%\t\t课程名:',
+                          course_item['courseName'])
                 else:
                     print('*\t\t\t', '总进度:', str(course_item['process']) + '%\t\t课程名:', course_item['courseName'])
             print("*" * 90, '\n')
@@ -169,19 +170,17 @@ def run(username1,
                                                                             vc_ck['verifycode'])
                         print('[小号添加课程] 结果: %s \t\t添加课程: %s ' % (
                             work_add_my_mooc_course.get('msg', 'Fail'), u1course_item['courseName']))
-
             # 4.再次查看小号课程
             username2course = mooc_work.getMyCourse(user_cookies['ck2'])['list']
             print("*" * 24, '小号所有课程(请检查大号的课程已全部显示在此处)', "*" * 24)
             for course_item in username2course:
                 if course_item['courseName'] in is_continue_work:
-                    print('* 【pass】  ', '总进度:', str(course_item['process']) + '%\t\t课程名:', course_item['courseName'])
+                    print('* 【pass】  ', '总进度:', str(course_item['process']) + '%\t\t课程名:',
+                          course_item['courseName'])
                 else:
                     print('*\t\t\t', '总进度:', str(course_item['process']) + '%\t\t课程名:', course_item['courseName'])
             print("*" * 90, '\n')
-
             print('\n' + '-' * 65, '\n' + '-' * 20, '初始化课程成功，开始答题！', '-' * 20, '\n' + '-' * 65, '\n')
-
             # 5.小号做作业，考试，测验
             work_exam_type = []
             if is_work_exam_type0:
@@ -209,15 +208,14 @@ def run(username1,
 
 def get_user_all():
     """读取csv至字典"""
-    # csvFile = open("../data/data.csv", "r", encoding='gbk')
-    csvFile = open("data/data.csv", "r", encoding='gbk')
-    reader = csv.reader(csvFile)
-    # 建立空字典
-    result = {}
-    for item in reader:
-        # 忽略第一行
-        if reader.line_num == 1:
-            continue
-        result[item[0]] = item[1]
-    csvFile.close()
+    # with open("../data/data.csv", "r", encoding='gbk') as csvFile:
+    with open("data/data.csv", "r", encoding='gbk') as csvFile:
+        reader = csv.reader(csvFile)
+        # 建立空字典
+        result = {}
+        for item in reader:
+            # 忽略第一行
+            if reader.line_num == 1:
+                continue
+            result[item[0]] = item[1]
     return result
