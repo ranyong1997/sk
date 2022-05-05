@@ -16,8 +16,8 @@ for key, value in mooc_init.get_user_all().items():
     username1 = key  # 账号
     password1 = value  # 密码
     # 账号2(小号)
-    username2 = "20175020140"  # 账号
-    password2 = "test_520"  # 密码
+    username2 = ""  # 账号
+    password2 = ""  # 密码
 
     # 账号1(大号)刷课
     is_look_video = True
