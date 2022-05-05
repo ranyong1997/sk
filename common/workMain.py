@@ -5,12 +5,12 @@
 # @Site    : 
 # @File    : workMain.py
 # @Software: PyCharm
-import csv
 import json
 import logging
 import random
-import requests
 import time
+
+import requests
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -53,6 +53,7 @@ GET_ALL_COURSE_CLASS_URL = BASE_URL + '/portal/Course/getAllCourseClass'
 # 用 courseOpenId 去添加课程
 ADD_MY_MOOC_COURSE = BASE_URL + '/study/Learn/addMyMoocCourse'
 
+
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36'
 }
@@ -60,8 +61,7 @@ HEADERS = {
 
 def getMyCourse(cookies):  # 1 我的课程列表
     time.sleep(0.25)
-    get = requests.get(url=GET_MY_COURSE_URL, params={'isFinished': 0, 'pageSize': 1000000}, cookies=cookies,
-                       headers=HEADERS)
+    get = requests.get(url=GET_MY_COURSE_URL, params={'isFinished': 0, 'pageSize': 1000000}, cookies=cookies, headers=HEADERS)
     return get.json()
 
 

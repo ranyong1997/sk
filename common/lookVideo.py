@@ -5,55 +5,30 @@
 # @Site    :
 # @File    : lookVideo.py
 # @Software: PyCharm
-import json
 import random
 import time
-import traceback
-
 import requests
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
 }
-is_work = ['国际商务谈判']  # 需要刷单门课
 
 
-# 1.获取所有课程，拿到id-------->
 def getCourseOpenList(cookies):
-    """
-    获取所有课程
-    :param cookies: cookies
-    :return:
-    """
     time.sleep(0.25)
     url = "https://mooc.icve.com.cn/portal/Course/getMyCourse?isFinished=0&pageSize=5000"
     result = requests.post(url=url, headers=headers, cookies=cookies).json()
     return result['list']
 
 
-# 2.得到一级目录-------->
 def getProcessList(cookies, course_id):
-    """
-    得到一级目录
-    :param cookies: cookies
-    :param courseId: gtjkawksy5jf7raso8gdq
-    :return:
-    """
     time.sleep(0.25)
     url = "https://mooc.icve.com.cn/study/learn/getProcessList"
     result = requests.post(url=url, data={'courseOpenId': course_id}, headers=headers, cookies=cookies).json()
     return result['proces']['moduleList']
 
 
-# 3.得到二级目录-------->
 def getTopicByModuleId(cookies, course_id, module_id):
-    """
-    得到二级目录
-    :param cookies: cookies
-    :param courseId: courseOpenId
-    :param moduleId: moduleId
-    :return:
-    """
     time.sleep(0.25)
     url = "https://mooc.icve.com.cn/study/learn/getTopicByModuleId"
     data = {
@@ -64,15 +39,7 @@ def getTopicByModuleId(cookies, course_id, module_id):
     return result['topicList']
 
 
-# 4.获得三级目录（详细信息）--------->
 def getCellByTopicId(cookies, course_id, topic_id):
-    """
-    获得三级目录（详细信息）
-    :param cookies: cookies
-    :param courseId: courseOpenId
-    :param topicId: topicId
-    :return:
-    """
     time.sleep(0.25)
     url = "https://mooc.icve.com.cn/study/learn/getCellByTopicId"
     data = {
@@ -83,15 +50,7 @@ def getCellByTopicId(cookies, course_id, topic_id):
     return result['cellList']
 
 
-# 5.拿到学习时长等信息---------->
 def viewDirectory(cookies, course_open_id, cell_id):
-    """
-    拿到学习时长等信息
-    :param cookies: cookies
-    :param courseOpenId: courseOpenId
-    :param cellId: cellId
-    :return:
-    """
     time.sleep(0.25)
     url = "https://mooc.icve.com.cn/study/learn/viewDirectory"
     data = {
@@ -102,16 +61,7 @@ def viewDirectory(cookies, course_open_id, cell_id):
     return result['courseCell']
 
 
-# 6.开始刷课--------->
 def statStuProcessCellLogAndTimeLong(cookies, course_open_id, cell_id, video_time_total_long):
-    """
-    开始刷课
-    :param cookies: cookies
-    :param courseOpenId: courseOpenId
-    :param cellId: cellId
-    :param videoTimeTotalLong: videoTimeTotalLong
-    :return:
-    """
     time.sleep(1.25)
     url = "https://mooc.icve.com.cn/study/learn/statStuProcessCellLogAndTimeLong"
     if video_time_total_long != 0:
