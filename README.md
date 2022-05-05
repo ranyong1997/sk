@@ -28,7 +28,7 @@ git clone https://github.com/ranyong1997/sk.git
 python main.py
 
 4 -- linux运行
-nohup sh run.sh >> sk.log 2>&1 &
+nohup python3 StartWork.py >> sk.log 2>&1 &
 tail -f sk.log
 ```
 
