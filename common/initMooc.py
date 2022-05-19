@@ -10,7 +10,8 @@ import csv
 import random
 import sys
 import time
-import ddddocr
+import traceback
+from io import BytesIO
 import requests
 import common.lookVideo as mook_video
 import common.workMain as mooc_work
@@ -34,6 +35,7 @@ def get_verify_code():
         if get_num > 4:
             print('自动识别验证码-->', end=' ')
             try:
+                import ddddocr
                 ocr = ddddocr.DdddOcr(show_ad=False, old=True)
                 code_value = ocr.classification(code_result.content)
                 if not len(code_value) == 4 or not code_value.isdigit():
@@ -41,28 +43,32 @@ def get_verify_code():
                     continue
                 else:
                     print('识别成功:', code_value, end=' ')
-            except NameError as e:
+            except (NameError, ModuleNotFoundError) as e:
                 print(e)
                 get_num = 4
                 continue
-        # else:
-        #     verify_code_file = './verify_code.jpg'
-        #     try:
-        #         Image.open(BytesIO(code_result.content)).show()
-        #         code_value = input("请输入验证码：")
-        #     except Exception as e:
-        #         print(e)
-        #         print('打开验证码失败!!! 请前往该项目根目录找到并打开 verify_code.jpg 后输入验证码!!!')
-        #         with open(verify_code_file, "wb", ) as f:
-        #             f.write(code_result.content)
-        #         code_value = input("请输入验证码：")
-        #     finally:
-        #         # 删除验证码照片
-        #         if os.path.exists(verify_code_file):
-        #             os.remove(verify_code_file)
-        # if not code_result.cookies or not code_value:
-        #     print('识别验证码出错，程序退出!')
-        #     sys.exit(0)
+            except Exception as e:
+                print(e)
+                sys.exit(0)
+        else:
+            verify_code_file = './verify_code.jpg'
+            try:
+                from PIL import Image
+                Image.open(BytesIO(code_result.content)).show()
+                code_value = input("请输入验证码：")
+            except Exception as e:
+                print(e)
+                print('打开验证码失败!!! 请前往该项目根目录找到并打开 verify_code.jpg 后输入验证码!!!')
+                with open(verify_code_file, "wb", ) as f:
+                    f.write(code_result.content)
+                code_value = input("请输入验证码：")
+            finally:
+                # 删除验证码照片
+                if os.path.exists(verify_code_file):
+                    os.remove(verify_code_file)
+        if not code_result.cookies or not code_value:
+            print('识别验证码出错，程序退出!')
+            sys.exit(0)
         return {'verify_code_ck': code_result.cookies, 'verify_code_value': code_value}
     print('多次未成功识别验证码，程序退出，请重新运行!')
     sys.exit(0)
@@ -75,7 +81,7 @@ def to_login(name, password):  # 0.登录
     :param password: 密码
     :return: cookies
     """
-    print('正在登录账号:', name, end='\t')
+    print('\n正在登录账号:', name, end='\t')
     verify_code = get_verify_code()
     vc_ck = verify_code['verify_code_ck']
     vc_val = verify_code['verify_code_value']
@@ -121,7 +127,7 @@ def run(username1,
         is_work_exam_type1,
         is_work_exam_type2,
         is_work_score,
-        is_continue_work):
+        is_continue_work):  # sourcery no-metrics
     for err_n in range(10, 0, -1):
         try:
             user_cookies = save_cookies(username1, password1, username2, password2)
@@ -137,8 +143,7 @@ def run(username1,
             if is_withdraw_course:
                 # 1.退出小号的所有课程
                 for u2course_item in username2course:
-                    work_withdraw_course = mooc_work.withdrawCourse(user_cookies['ck2'],
-                                                                    u2course_item['courseOpenId'],
+                    work_withdraw_course = mooc_work.withdrawCourse(user_cookies['ck2'], u2course_item['courseOpenId'],
                                                                     u2course_item['stuId'])
                     print('[小号退出课程] 结果: %s\t退出课程: %s' % (work_withdraw_course['msg'], u2course_item['courseName']))
             # 2.获取大号的所有课程
@@ -146,8 +151,7 @@ def run(username1,
             print("*" * 40, '大号所有课程', "*" * 40)
             for course_item in username1course:
                 if course_item['courseName'] in is_continue_work:
-                    print('* 【pass】  ', '总进度:', str(course_item['process']) + '%\t\t课程名:',
-                          course_item['courseName'])
+                    print('* 【pass】  ', '总进度:', str(course_item['process']) + '%\t\t课程名:', course_item['courseName'])
                 else:
                     print('*\t\t\t', '总进度:', str(course_item['process']) + '%\t\t课程名:', course_item['courseName'])
             print("*" * 90, '\n')
@@ -170,17 +174,19 @@ def run(username1,
                                                                             vc_ck['verifycode'])
                         print('[小号添加课程] 结果: %s \t\t添加课程: %s ' % (
                             work_add_my_mooc_course.get('msg', 'Fail'), u1course_item['courseName']))
+
             # 4.再次查看小号课程
             username2course = mooc_work.getMyCourse(user_cookies['ck2'])['list']
             print("*" * 24, '小号所有课程(请检查大号的课程已全部显示在此处)', "*" * 24)
             for course_item in username2course:
                 if course_item['courseName'] in is_continue_work:
-                    print('* 【pass】  ', '总进度:', str(course_item['process']) + '%\t\t课程名:',
-                          course_item['courseName'])
+                    print('* 【pass】  ', '总进度:', str(course_item['process']) + '%\t\t课程名:', course_item['courseName'])
                 else:
                     print('*\t\t\t', '总进度:', str(course_item['process']) + '%\t\t课程名:', course_item['courseName'])
             print("*" * 90, '\n')
+
             print('\n' + '-' * 65, '\n' + '-' * 20, '初始化课程成功，开始答题！', '-' * 20, '\n' + '-' * 65, '\n')
+
             # 5.小号做作业，考试，测验
             work_exam_type = []
             if is_work_exam_type0:
