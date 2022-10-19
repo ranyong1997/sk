@@ -9,13 +9,13 @@ import json
 import random
 import time
 import traceback
-
 import requests
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
 }
 is_work = ['国际商务谈判']  # 需要刷单门课
+
 
 # 1.获取所有课程，拿到id-------->
 def getCourseOpenList(cookies):

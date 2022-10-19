@@ -14,8 +14,8 @@ for key, value in mooc_init.get_user_all().items():
     username1 = key  # 账号
     password1 = value  # 密码
     # 账号2(小号)
-    username2 = "20175020140"  # 账号
-    password2 = "test_5201"  # 密码
+    username2 = ""  # 账号
+    password2 = ""  # 密码
 
     # 账号1(大号)刷课
     is_look_video = True
@@ -36,9 +36,9 @@ for key, value in mooc_init.get_user_all().items():
     is_work_score = 90
 
     # 需要跳过的课程，填写方式例： ['大学语文', '高等数学']
-    is_continue_work = ['注射成型技术', '鞋服陈列与营销','国际贸易实务']
+    is_continue_work = ['注射成型技术', '鞋服陈列与营销', '国际贸易实务']
 
-# ****************************************** 结束 ******************************************
+    # ****************************************** 结束 ******************************************
 
     if __name__ == '__main__':
         mooc_init.run(

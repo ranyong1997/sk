@@ -14,8 +14,7 @@ import requests
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-BASE_URL = 'https://mooc.icve.com.cn'
-
+BASE_URL = 'https://www.icve.com.cn'
 # 获取我加入的所有课程
 GET_MY_COURSE_URL = BASE_URL + '/portal/Course/getMyCourse'
 

@@ -9,8 +9,8 @@ import os
 import csv
 import random
 import sys
+import ddddocr
 import time
-import traceback
 from io import BytesIO
 import requests
 import common.lookVideo as mook_video
@@ -20,7 +20,7 @@ BASE_URL = 'https://mooc.icve.com.cn'
 # 登录
 LOGIN_SYSTEM_URL = BASE_URL + '/portal/LoginMooc/loginSystem'
 # 获取验证码
-GET_VERIFY_CODE = BASE_URL + '/portal/LoginMooc/getVerifyCode?ts={ts}'
+GET_VERIFY_CODE = BASE_URL + '/portal/VerifyCode/index?t={ts}'
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36'
@@ -32,12 +32,13 @@ def get_verify_code():
     while get_num:
         get_num -= 1
         code_result = requests.post(url=GET_VERIFY_CODE.format(ts=time.time()), headers=HEADERS)
+        print("code_result-->", code_result)
         if get_num > 4:
             print('自动识别验证码-->', end=' ')
             try:
-                import ddddocr
                 ocr = ddddocr.DdddOcr(show_ad=False, old=True)
                 code_value = ocr.classification(code_result.content)
+                print("code_value-->", code_value)
                 if not len(code_value) == 4 or not code_value.isdigit():
                     print('识别失败:', code_value, end=' ')
                     continue
@@ -100,6 +101,7 @@ def to_login(name, password):  # 0.登录
         sys.exit(0)
 
 
+# 保存cookies
 def save_cookies(username1, password1, username2=None, password2=None):  # 登录
     ck = {}
     if username1 and password1:
@@ -117,6 +119,7 @@ def save_cookies(username1, password1, username2=None, password2=None):  # 登�
     return ck
 
 
+# 运行代码
 def run(username1,
         password1,
         username2,
@@ -212,6 +215,7 @@ def run(username1,
             continue
 
 
+# 批量获取刷课用户
 def get_user_all():
     """读取csv至字典"""
     # with open("../data/data.csv", "r", encoding='gbk') as csvFile:

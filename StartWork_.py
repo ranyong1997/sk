@@ -18,8 +18,8 @@ for key, value in mooc_init.get_user_all().items():
     username1 = key  # 账号
     password1 = value  # 密码
     # 账号2(小号)
-    username2 = key  # 账号
-    password2 = value  # 密码
+    username2 = ""  # 账号
+    password2 = ""  # 密码
 
     # 账号1(大号)刷课
     is_look_video = True
@@ -37,7 +37,8 @@ for key, value in mooc_init.get_user_all().items():
     is_continue_work = ['注射成型技术', '鞋服陈列设计']
 
 
-    def save_cookies():  # 登录
+    # 保存cookies
+    def save_cookies():
         ck = {}
         if username1 and password1:
             ck['ck1'] = mooc_init.login(username1, password1)

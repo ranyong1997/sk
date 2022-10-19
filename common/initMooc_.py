@@ -7,16 +7,18 @@
 # @Software: PyCharm
 import os
 import csv
+import random
 import time
+import base64
 from io import BytesIO
 import ddddocr
 import requests
 from PIL import Image
 
-BASE_URL = 'https://mooc.icve.com.cn'
+BASE_URL = 'https://www.icve.com.cn'
 
 # 登录
-LOGIN_SYSTEM_URL = BASE_URL + '/portal/LoginMooc/loginSystem'
+LOGIN_SYSTEM_URL = f"{BASE_URL}/portal/Register/Login_New"
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36'
@@ -37,7 +39,7 @@ def auto_identify_verify_code(verify_code_content):
         return res
     except Exception as e:
         print("识别失败:" + str(e))
-        return "xxxx"
+        return "识别失败:" + str(e)
 
 
 def manual_identify_verify_code(verify_code_content):
@@ -63,26 +65,23 @@ def manual_identify_verify_code(verify_code_content):
 
 
 def to_url(name, password, login_fail_num):
-    code_url = "https://mooc.icve.com.cn/portal/LoginMooc/getVerifyCode?ts={}".format(time.time())
-    code_result = requests.post(url=code_url, headers=HEADERS)
+    name_b64 = base64.b64encode(name.encode('utf-8'))
+    pwd_b64 = base64.b64encode(password.encode('utf-8'))
+    code_url = f"{BASE_URL}/portal/VerifyCode/index?t={random.uniform(0, 1)}"
+    code_result = requests.get(url=code_url, headers=HEADERS)
     # ----------去除自动输入验证码start
     if login_fail_num < 6:
+        # 自动识别验证码
         code_value = auto_identify_verify_code(code_result.content)
-    # else:
-    #     code_value = manual_identify_verify_code(code_result.content)
-    # ----------去除自动输入验证码end
-    # code_value = manual_identify_verify_code(code_result.content)
-    # ----------改为手动输入验证码
     data = {
-        'userName': name,
-        'password': password,
+        'userName': name_b64,
+        'pwd': pwd_b64,
         'verifycode': code_value
     }
-    result = requests.post(url=LOGIN_SYSTEM_URL, data=data, cookies=code_result.cookies, headers=HEADERS)
-    return result
+    return requests.post(url=LOGIN_SYSTEM_URL, data=data, cookies=code_result.cookies, headers=HEADERS)
 
 
-def login(name, password):  # 0.登录
+def login(name, password):    # 0.登录
     """
     登录
     :param name: 用户名
@@ -94,26 +93,24 @@ def login(name, password):  # 0.登录
     while login_fail_num < 4:
         result = to_url(name, password, login_fail_num)
         json_result = result.json()
-        if json_result['code'] == 1 and json_result['msg'] == "登录成功":
-            print("==================== 登陆成功:【" + str(name), json_result['schoolName'], "】 ====================\n")
+        if json_result['code'] == 1 and json_result['redirect_url'] == "":
+            print("==================== 登陆成功:【" + str(name), "】 ====================\n")
             return result.cookies
         else:
             print("\t\t--->", json_result['msg'])
             login_fail_num += 1
-    raise Exception("账号:" + str(name) + " 登录失败")
+    raise Exception(f"账号:{str(name)} 登录失败")
 
 
 def get_user_all():
     """读取csv至字典"""
-    # csvFile = open("../data/data.csv", "r", encoding='gbk')
-    csvFile = open("data/data.csv", "r", encoding='gbk')
-    reader = csv.reader(csvFile)
-    # 建立空字典
-    result = {}
-    for item in reader:
-        # 忽略第一行
-        if reader.line_num == 1:
-            continue
-        result[item[0]] = item[1]
-    csvFile.close()
+    with open("data/data.csv", "r", encoding='gbk') as csvFile:
+        reader = csv.reader(csvFile)
+        # 建立空字典
+        result = {}
+        for item in reader:
+            # 忽略第一行
+            if reader.line_num == 1:
+                continue
+            result[item[0]] = item[1]
     return result
