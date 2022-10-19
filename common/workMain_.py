@@ -16,11 +16,12 @@ logger = logging.getLogger(__name__)
 
 BASE_URL = 'https://www.icve.com.cn'
 # 获取我加入的所有课程
-GET_MY_COURSE_URL = BASE_URL + '/portal/Course/getMyCourse'
+# GET_MY_COURSE_URL = BASE_URL + '/portal/Course/getMyCourse'
+GET_MY_COURSE_URL = BASE_URL + '/studycenter/MyCourse/studingCourse'
 
 # 获取本课程 作业/测验/考试 ID api
-GET_WORK_EXAM_LIST_URL = BASE_URL + '/study/workExam/getWorkExamList'
-
+# GET_WORK_EXAM_LIST_URL = BASE_URL + '/study/workExam/getWorkExamList'
+GET_WORK_EXAM_LIST_URL = BASE_URL + '/study/works/index'
 # 做作业 api
 WORK_EXAM_PREVIEW_URL = BASE_URL + '/study/workExam/workExamPreview'
 
@@ -49,7 +50,9 @@ COURSE_WITHDRAW_COURSE = BASE_URL + '/portal/Course/withdrawCourse'
 GET_ALL_COURSE_CLASS_URL = BASE_URL + '/portal/Course/getAllCourseClass'
 
 # 用 courseOpenId 去添加课程
-ADD_MY_MOOC_COURSE = BASE_URL + '/study/Learn/addMyMoocCourse'
+# ADD_MY_MOOC_COURSE = BASE_URL + '/study/Learn/addMyMoocCourse'
+ADD_MY_MOOC_COURSE = BASE_URL + '/Study/Directory/isCanLearn'
+# https://www.icve.com.cn/Study/Directory/isCanLearn?courseId=vzbfafmra6xjnciyxpscq
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36'
@@ -58,14 +61,18 @@ HEADERS = {
 
 # cookies = None
 
-
-def getMyCourse(cookies):  # 1 我的课程列表
+# 获取课程列表
+def getMyCourse(cookies):
     # isFinished 只获取没有结束的课程
-    get = requests.get(url=GET_MY_COURSE_URL, params={'isFinished': 0, 'pageSize': 1000000}, cookies=cookies,
-                       headers=HEADERS)
+    # https://www.icve.com.cn/studycenter/PersonalInfo/getUserInfo
+    params = {
+        'userid': "4ijoadovo9eoedvgssdtw",
+    }
+    get = requests.post(url=GET_MY_COURSE_URL, params=params, cookies=cookies, headers=HEADERS)
     return get.json()
 
 
+# 获取作业、考试、测验
 def getWorkExamList(cookies, course_open_id, work_exam_type):  # 2 获取作业 考试 测验
     params = {
         'pageSize': 50000,
@@ -166,11 +173,13 @@ def withdrawCourse(cookies, course_open_id, user_id):  # 8 退出课程
     return post.json()
 
 
+# 添加课程
 def addMyMoocCourse(cookies, course_open_id):  # 3 添加到我的课程
     params = {
         'courseOpenId': course_open_id,
-        'courseId': ''
+        'courseId': 'vzbfafmra6xjnciyxpscq'
     }
+    # https://www.icve.com.cn/Study/Directory/isCanLearn?courseId=vzbfafmra6xjnciyxpscq
     get = requests.post(url=ADD_MY_MOOC_COURSE, params=params, cookies=cookies, headers=HEADERS)
     return get.json()  # 添加课程成功返回
 

@@ -18,8 +18,8 @@ for key, value in mooc_init.get_user_all().items():
     username1 = key  # 账号
     password1 = value  # 密码
     # 账号2(小号)
-    username2 = ""  # 账号
-    password2 = ""  # 密码
+    username2 = "20175020140"  # 账号
+    password2 = "Ranyong_123"  # 密码
 
     # 账号1(大号)刷课
     is_look_video = True
@@ -73,31 +73,29 @@ for key, value in mooc_init.get_user_all().items():
                 print('-' * 60, '\n' + '-' * 23, '初始化课程中！', '-' * 23, '\n' + '-' * 60, '\n')
                 # 0.获取小号的所有课程
                 username2course = mooc_work.getMyCourse(user_cookies['ck2'])['list']
-                print('[小号] ============= 获取所有课程: \n\t~ %s' % '\n\t~ '.join([x['courseName'] for x in username2course]))
+                print('[小号] ============= 获取所有课程: \n\t~ %s' % '\n\t~ '.join([x['title'] for x in username2course]))
                 if is_withdraw_course:
                     # 1.退出小号的所有课程
                     for u2course_item in username2course:
                         work_withdraw_course = mooc_work.run_work_withdraw_course(user_cookies['ck1'],
                                                                                   u2course_item['courseOpenId'],
                                                                                   u2course_item['stuId'])
-                        print('[小号] 退出课程: %s \t结果: %s' % (u2course_item['courseName'], work_withdraw_course['msg']))
-
+                        print('[小号] 退出课程: %s \t结果: %s' % (u2course_item['title'], work_withdraw_course['msg']))
                 # 2.获取大号的所有课程
                 username1course = mooc_work.getMyCourse(user_cookies['ck1'])['list']
-                print('【大号】============= 获取所有课程: \n\t~ %s' % '\n\t~ '.join([x['courseName'] for x in username1course]))
+                print('【大号】============= 获取所有课程: \n\t~ %s' % '\n\t~ '.join([x['title'] for x in username1course]))
                 # 3.添加大号课程给小号
                 for u1course_item in username1course:
-                    if u1course_item['courseOpenId'] in [x['courseOpenId'] for x in username2course]:
-                        print('[小号] 添加课程: %s \t结果: 课程已存在!' % (u1course_item['courseName']))
+                    if u1course_item['id'] in [x['id'] for x in username2course]:
+                        print('[小号] 添加课程: %s \t结果: 课程已存在!' % (u1course_item['title']))
                     else:
                         work_add_my_mooc_course = mooc_work.addMyMoocCourse(user_cookies['ck2'],
-                                                                            u1course_item['courseOpenId'])
+                                                                            u1course_item['id'])
                         print('[小号] 添加课程: %s \t结果: %s' % (
-                            u1course_item['courseName'], work_add_my_mooc_course.get('msg', 'Fail')))
-
+                            u1course_item['title'], work_add_my_mooc_course.get('msg', 'Fail')))
                 # 4.再次查看小号课程
                 username2course = mooc_work.getMyCourse(user_cookies['ck2'])['list']
-                print('[小号] ============= 获取所有课程: \n\t~ %s' % '\n\t~ '.join([x['courseName'] for x in username2course]))
+                print('[小号] ============= 获取所有课程: \n\t~ %s' % '\n\t~ '.join([x['title'] for x in username2course]))
                 print('\n' + '-' * 65, '\n' + '-' * 20, '初始化课程成功，开始答题！', '-' * 20, '\n' + '-' * 65, '\n')
                 # 5.小号做作业，考试，测验
                 work_exam_type = []

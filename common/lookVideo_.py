@@ -16,6 +16,8 @@ headers = {
 }
 is_work = ['国际商务谈判']  # 需要刷单门课
 
+BASE_URL = 'https://www.icve.com.cn'
+
 
 # 1.获取所有课程，拿到id-------->
 def getCourseOpenList(cookies):
@@ -24,7 +26,7 @@ def getCourseOpenList(cookies):
     :param cookies: cookies
     :return:
     """
-    url = "https://mooc.icve.com.cn/portal/Course/getMyCourse?isFinished=0&pageSize=5000"
+    url = f"{BASE_URL}/studycenter/MyCourse/studingCourse"
     result = json.loads(requests.post(url=url, headers=headers, cookies=cookies).text)
     return result['list']
 
@@ -260,3 +262,6 @@ def start(cookies, is_continue_work):
                             else:
                                 print(
                                     "\t\t\t\t" + "\t类型：" + n['categoryName'] + "\t\t-----ERROR----\t\t" + n['cellName'])
+
+if __name__ == '__main__':
+    getCourseOpenList()
