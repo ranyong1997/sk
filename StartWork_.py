@@ -26,15 +26,18 @@ for key, value in mooc_init.get_user_all().items():
     # 小号退出所有课程
     is_withdraw_course = False
     # 做作业
-    is_work_exam_type0 = True
-    # 做测验
+    is_work_exam_type0 = False
+    # 随堂测验
     is_work_exam_type1 = True
+    # 讨论
+    is_work_exam_type2 = False
     # 考试
-    is_work_exam_type2 = True
+    is_work_exam_type3 = False
     # 大于90分的不进行再次作答
     is_work_score = 90
     # 需要跳过的课程，填写方式例： ['大学语文', '高等数学']
     is_continue_work = ['注射成型技术', '鞋服陈列设计']
+
 
     # 保存cookies
     def save_cookies():
@@ -55,7 +58,7 @@ for key, value in mooc_init.get_user_all().items():
         for err_n in range(10, 0, -1):
             try:
                 user_cookies = save_cookies()
-                work_exam_type_map = {0: '作业', 1: '测验', 2: '考试'}
+                work_exam_type_map = {0: '作业', 1: '测验', 2: '考试', 3: '讨论'}
                 if is_look_video:
                     mook_video.start(user_cookies['ck1'], is_continue_work)
                     print(">>> 刷课程序运行结束")
@@ -99,22 +102,23 @@ for key, value in mooc_init.get_user_all().items():
                 # # 5.小号做作业，考试，测验
                 work_exam_type = []
                 if is_work_exam_type0:
-                    work_exam_type.append(0)
-                if is_work_exam_type1:
                     work_exam_type.append(1)
-                if is_work_exam_type2:
+                if is_work_exam_type1:
                     work_exam_type.append(2)
+                if is_work_exam_type2:
+                    work_exam_type.append(3)
+                if is_work_exam_type3:
+                    work_exam_type.append(4)
                 for t in work_exam_type:
                     for u1course in username1course:
-                        print('username1course: %s' % username1course)
                         if u1course['title'] in is_continue_work:
                             print('【大号】 跳过课程 \t当前课程 \t【%s】' % u1course['title'])
                             continue
                         # 6.大号开始答题
                         print('【大号】 开始答题 \t当前课程 \t【%s】' % u1course['title'])
                         # todo: run_start_work需要重新抓取接口
-                        # mooc_work.run_start_work(user_cookies['ck1'], user_cookies['ck2'], t, u1course['id'],
-                        #                          is_work_score)
+                        mooc_work.run_start_work(user_cookies['ck1'], user_cookies['ck2'], t, u1course['id'],
+                                                 is_work_score)
                 print('\n' + '=' * 65, '\n' + '=' * 20, '运行结束 感谢使用',
                       '=' * 20,
                       '\n' + '=' * 65, '\n')

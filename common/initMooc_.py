@@ -81,7 +81,7 @@ def to_url(name, password, login_fail_num):
     return requests.post(url=LOGIN_SYSTEM_URL, data=data, cookies=code_result.cookies, headers=HEADERS)
 
 
-def login(name, password):    # 0.登录
+def login(name, password):  # 0.登录
     """
     登录
     :param name: 用户名
@@ -89,8 +89,8 @@ def login(name, password):    # 0.登录
     :return: cookies
     """
     login_fail_num = 0
-    print('正在登录账号:', name)
-    while login_fail_num < 4:
+    print('正在登录账号:【{}】'.format(name))
+    while login_fail_num < 6:
         result = to_url(name, password, login_fail_num)
         json_result = result.json()
         if json_result['code'] == 1 and json_result['redirect_url'] == "":
